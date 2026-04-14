@@ -4,7 +4,7 @@
   "description": "EnoSoft project management system",
   "scripts": {
     "dev": "vite",
-    "build": "npm exec -- vite build",
+    "build": "node ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit"
