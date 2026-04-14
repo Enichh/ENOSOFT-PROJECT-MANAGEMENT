@@ -1,0 +1,37 @@
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requiredRole?: string;
+  requiredPermission?: string;
+}
+
+export function ProtectedRoute({ children, requiredRole, requiredPermission }: ProtectedRouteProps) {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  if (requiredPermission) {
+    const { PERMISSIONS } = require('../types/permissions');
+    const userPermissions = PERMISSIONS[user.role as keyof typeof PERMISSIONS];
+    
+    if (!userPermissions.includes('*') && !userPermissions.includes(requiredPermission)) {
+      return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  return <>{children}</>;
+}
