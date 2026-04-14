@@ -13,6 +13,7 @@ interface DataTableProps<T> {
   onRowClick?: (row: T) => void;
   isLoading?: boolean;
   emptyMessage?: string;
+  idKey?: keyof T;
 }
 
 export default function DataTable<T extends Record<string, unknown>>({
@@ -21,6 +22,7 @@ export default function DataTable<T extends Record<string, unknown>>({
   onRowClick,
   isLoading = false,
   emptyMessage = 'No data available',
+  idKey,
 }: DataTableProps<T>) {
   if (isLoading) {
     return (
@@ -56,7 +58,7 @@ export default function DataTable<T extends Record<string, unknown>>({
         <tbody className="bg-white divide-y divide-gray-200">
           {data.map((row, index) => (
             <tr
-              key={index}
+              key={idKey ? String(row[idKey]) : index}
               onClick={() => onRowClick?.(row)}
               className={onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}
             >

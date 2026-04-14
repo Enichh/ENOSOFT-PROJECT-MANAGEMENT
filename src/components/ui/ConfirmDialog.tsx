@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -29,18 +30,12 @@ export default function ConfirmDialog({
           <p className="text-gray-600 mb-6">{message}</p>
           
           <div className="flex items-center justify-end space-x-3">
-            <button
-              onClick={onCancel}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
+            <Button variant="secondary" onClick={onCancel}>
               {cancelText}
-            </button>
-            <button
-              onClick={onConfirm}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
+            </Button>
+            <Button variant="primary" onClick={onConfirm}>
               {confirmText}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
