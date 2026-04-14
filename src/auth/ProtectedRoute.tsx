@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 interface ProtectedRouteProps {
@@ -10,14 +10,13 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, requiredRole, requiredPermission }: ProtectedRouteProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
-  const location = useLocation();
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (requiredRole && user.role !== requiredRole) {
