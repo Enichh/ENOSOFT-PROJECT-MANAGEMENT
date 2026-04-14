@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/login" />,
   },
   {
     path: '/admin',
@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/admin/dashboard" replace />,
+        element: <Navigate to="/admin/dashboard" />,
       },
       {
         path: 'dashboard',
@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/employee/dashboard" replace />,
+        element: <Navigate to="/employee/dashboard" />,
       },
       {
         path: 'dashboard',

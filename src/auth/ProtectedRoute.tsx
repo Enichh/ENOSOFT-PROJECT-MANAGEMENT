@@ -16,11 +16,11 @@ export function ProtectedRoute({ children, requiredRole, requiredPermission }: P
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
 
   if (requiredPermission) {
@@ -28,7 +28,7 @@ export function ProtectedRoute({ children, requiredRole, requiredPermission }: P
     const userPermissions = PERMISSIONS[user.role as keyof typeof PERMISSIONS];
     
     if (!userPermissions.includes('*') && !userPermissions.includes(requiredPermission)) {
-      return <Navigate to="/login" replace />;
+      return <Navigate to="/login" />;
     }
   }
 
