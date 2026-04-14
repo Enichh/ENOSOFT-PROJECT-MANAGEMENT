@@ -11,6 +11,7 @@ interface EmployeeFormData {
   jobType: 'remote' | 'onsite' | 'hybrid';
   category: 'fullTime' | 'partTime' | 'contractor' | 'intern';
   skills: string[];
+  joinDate: string;
 }
 
 interface EmployeeModalProps {
@@ -35,6 +36,7 @@ export default function EmployeeModal({
     jobType: 'remote',
     category: 'fullTime',
     skills: [],
+    joinDate: new Date().toISOString().split('T')[0],
   });
 
   const [skillInput, setSkillInput] = useState('');
@@ -49,6 +51,7 @@ export default function EmployeeModal({
         jobType: employee.jobType,
         category: employee.category,
         skills: employee.skills,
+        joinDate: employee.joinDate,
       });
     } else {
       setFormData({
@@ -58,6 +61,7 @@ export default function EmployeeModal({
         jobType: 'remote',
         category: 'fullTime',
         skills: [],
+        joinDate: new Date().toISOString().split('T')[0],
       });
     }
     setErrors({});
@@ -125,6 +129,16 @@ export default function EmployeeModal({
           error={errors.email}
           required
         />
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Join Date</label>
+          <Input
+            type="date"
+            value={formData.joinDate}
+            onChange={(e) => setFormData({ ...formData, joinDate: e.target.value })}
+            required
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
