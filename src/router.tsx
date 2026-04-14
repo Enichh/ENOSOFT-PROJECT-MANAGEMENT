@@ -10,6 +10,7 @@ import CalendarPage from './pages/admin/CalendarPage';
 import EmployeeDashboardPage from './pages/employee/DashboardPage';
 import TasksPage from './pages/employee/TasksPage';
 import HistoryPage from './pages/employee/HistoryPage';
+import TeamPage from './pages/employee/TeamPage';
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
       {
         path: 'history',
         element: <HistoryPage />,
+      },
+      {
+        path: 'team',
+        element: <TeamPage />,
       },
     ],
   },
