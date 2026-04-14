@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Project, Task } from '../../types/models';
 import { api } from '../../lib/apiClient';
-import { useToast } from '../ui/Toast';
-import HistoryCard from '../history/HistoryCard';
+import { useToast } from '../../components/ui/Toast';
+import HistoryCard from '../../components/history/HistoryCard';
 
 interface ProjectStats {
   [projectId: string]: {

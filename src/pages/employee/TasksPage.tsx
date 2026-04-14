@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Task } from '../../types/models';
 import { api } from '../../lib/apiClient';
-import { useToast } from '../ui/Toast';
-import TaskCard from '../tasks/TaskCard';
-import TaskDetailModal from '../tasks/TaskDetailModal';
-import ConfirmDialog from '../ui/ConfirmDialog';
+import { useToast } from '../../components/ui/Toast';
+import TaskCard from '../../components/tasks/TaskCard';
+import TaskDetailModal from '../../components/tasks/TaskDetailModal';
+import ConfirmDialog from '../../components/ui/ConfirmDialog';
 
 type TaskStatus = Task['status'] | 'all';
 
@@ -85,7 +85,7 @@ export default function TasksPage() {
       const task = tasks.find(t => t.id === taskToComplete);
       if (!task) return;
 
-      const originalTask = { ...task };
+      const originalStatus = task.status;
       
       setTasks(prev => prev.map(t => 
         t.id === taskToComplete 
@@ -103,7 +103,7 @@ export default function TasksPage() {
       console.error('Error completing task:', error);
       
       setTasks(prev => prev.map(t => 
-        t.id === taskToComplete ? originalTask : t
+        t.id === taskToComplete ? { ...t, status: originalStatus } : t
       ));
       
       showToast('Error completing task', 'error');

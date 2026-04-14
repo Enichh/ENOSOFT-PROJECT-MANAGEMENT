@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Project, Employee } from '../../types/models';
 import { api } from '../../lib/apiClient';
-import { useToast } from '../ui/Toast';
-import ProjectSelector from '../team/ProjectSelector';
-import TeamMemberCard from '../team/TeamMemberCard';
+import { useToast } from '../../components/ui/Toast';
+import ProjectSelector from '../../components/team/ProjectSelector';
+import TeamMemberCard from '../../components/team/TeamMemberCard';
 
 export default function TeamPage() {
   const [projects, setProjects] = useState<Project[]>([]);

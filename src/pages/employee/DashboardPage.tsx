@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Task, Project } from '../../types/models';
 import { api } from '../../lib/apiClient';
-import { useToast } from '../ui/Toast';
+import { useToast } from '../../components/ui/Toast';
 
 export default function EmployeeDashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
