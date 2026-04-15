@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -16,7 +16,7 @@ export default function CalendarPage() {
 
   const queryClient = useQueryClient();
 
-  const { data: events = [], isLoading } = useQuery<CalendarEvent[]>({
+  const { data: events = [] } = useQuery<CalendarEvent[]>({
     queryKey: ['calendar'],
     queryFn: () => api.get<CalendarEvent[]>('/calendar'),
   });
@@ -113,7 +113,7 @@ export default function CalendarPage() {
           selectable={true}
           eventDrop={(arg) => {
             const updatedEvent = events.find((e) => e.id === arg.event.id);
-            if (updatedEvent) {
+            if (updatedEvent && arg.event.start) {
               handleSubmitEvent({
                 ...updatedEvent,
                 startDate: arg.event.start.toISOString(),
@@ -123,7 +123,7 @@ export default function CalendarPage() {
           }}
           eventResize={(arg) => {
             const updatedEvent = events.find((e) => e.id === arg.event.id);
-            if (updatedEvent) {
+            if (updatedEvent && arg.event.start) {
               handleSubmitEvent({
                 ...updatedEvent,
                 startDate: arg.event.start.toISOString(),

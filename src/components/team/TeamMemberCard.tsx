@@ -1,4 +1,3 @@
-import React from 'react';
 import { Employee } from '../../types/models';
 
 interface TeamMemberCardProps {

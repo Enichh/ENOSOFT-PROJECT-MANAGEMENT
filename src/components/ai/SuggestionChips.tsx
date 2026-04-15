@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SuggestionChipsProps {
   suggestions: string[];
   onSelect: (suggestion: string) => void;

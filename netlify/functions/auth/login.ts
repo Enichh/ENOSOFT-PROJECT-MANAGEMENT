@@ -1,4 +1,5 @@
 import { Handler } from '@netlify/functions';
+import * as bcrypt from 'bcryptjs';
 import { dataStore } from '../lib/dataStore';
 import { withCors, withSecurity } from '../lib/cors';
 import { formatError, formatSuccess, UnauthorizedError, ValidationError, NotFoundError } from '../lib/errors';
@@ -22,7 +23,12 @@ export const handler: Handler = async (event) => {
 
       const user = await dataStore.getById<any>('users', email);
       
-      if (!user || user.passwordHash !== password) {
+      if (!user) {
+        throw new UnauthorizedError('Invalid credentials');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+      if (!isPasswordValid) {
         throw new UnauthorizedError('Invalid credentials');
       }
 

@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { User } from '../types/models';
 import * as authService from './authService';
 import { getToken, setToken, removeToken } from './tokenStorage';
-import { verifyToken } from './jwtUtils';
+import { decodeToken } from './jwtUtils';
 
 interface AuthContextType {
   user: User | null;
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const token = getToken();
       if (token) {
-        const payload = verifyToken(token);
+        const payload = decodeToken(token);
         if (payload) {
           const currentUser = await authService.getCurrentUser();
           setUser(currentUser);

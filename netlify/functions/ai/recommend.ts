@@ -1,7 +1,7 @@
 import { Handler } from '@netlify/functions';
 import { dataStore } from '../lib/dataStore';
 import { withCors, withSecurity } from '../lib/cors';
-import { formatError, formatSuccess, ValidationError, NotFoundError } from '../lib/errors';
+import { formatError, formatSuccess, ValidationError, NotFoundError, UnauthorizedError } from '../lib/errors';
 import { verifyToken, extractTokenFromHeader } from '../lib/jwt';
 import { EMPLOYEE_RECOMMENDATION_PROMPT } from '../../../src/types/aiPrompts';
 import OpenAI from 'openai';
@@ -9,7 +9,7 @@ import OpenAI from 'openai';
 async function authenticateUser(authHeader: string | null) {
   const token = extractTokenFromHeader(authHeader);
   if (!token) {
-    throw new Error('No token provided');
+    throw new UnauthorizedError('No token provided');
   }
   return verifyToken(token);
 }
@@ -22,7 +22,7 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    await authenticateUser(event.headers.authorization);
+    await authenticateUser(event.headers.authorization || null);
 
     if (event.httpMethod === 'POST') {
       const body = JSON.parse(event.body || '{}');
@@ -48,8 +48,8 @@ export const handler: Handler = async (event) => {
       const prompt = `${EMPLOYEE_RECOMMENDATION_PROMPT}
 
 Project Details:
-- Name: ${project.name}
-- Description: ${project.description}
+- Name: ${(project as any).name}
+- Description: ${(project as any).description}
 - Required Skills: ${requiredSkills ? requiredSkills.join(', ') : 'Not specified'}
 - Additional Context: ${description || 'None'}
 

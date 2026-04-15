@@ -1,13 +1,13 @@
 import { Handler } from '@netlify/functions';
 import { dataStore } from '../lib/dataStore';
 import { withCors, withSecurity } from '../lib/cors';
-import { formatError, formatSuccess, ForbiddenError, ValidationError } from '../lib/errors';
+import { formatError, formatSuccess, ForbiddenError, ValidationError, UnauthorizedError } from '../lib/errors';
 import { verifyToken, extractTokenFromHeader } from '../lib/jwt';
 
 async function authenticateUser(authHeader: string | null) {
   const token = extractTokenFromHeader(authHeader);
   if (!token) {
-    throw new Error('No token provided');
+    throw new UnauthorizedError('No token provided');
   }
   return verifyToken(token);
 }
@@ -20,7 +20,7 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    const user = await authenticateUser(event.headers.authorization);
+    const user = await authenticateUser(event.headers.authorization || null);
 
     if (event.httpMethod === 'GET') {
       if (user.role === 'admin') {

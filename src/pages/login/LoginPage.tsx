@@ -6,7 +6,7 @@ import Input from '../../components/ui/Input';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
@@ -19,8 +19,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      const userRole = localStorage.getItem('userRole');
-      if (userRole === 'admin') {
+      if (user?.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/employee/dashboard');

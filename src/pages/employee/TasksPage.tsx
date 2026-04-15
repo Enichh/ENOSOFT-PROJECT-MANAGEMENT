@@ -81,12 +81,12 @@ export default function TasksPage() {
   const confirmCompleteTask = async () => {
     if (!taskToComplete) return;
 
-    try {
-      const task = tasks.find(t => t.id === taskToComplete);
-      if (!task) return;
+    const task = tasks.find(t => t.id === taskToComplete);
+    if (!task) return;
 
-      const originalStatus = task.status;
-      
+    const originalStatus = task.status;
+
+    try {
       setTasks(prev => prev.map(t => 
         t.id === taskToComplete 
           ? { ...t, status: 'completed' as const, completedAt: new Date().toISOString() }

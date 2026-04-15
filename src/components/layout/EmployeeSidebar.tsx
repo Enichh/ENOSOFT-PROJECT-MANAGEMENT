@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { api } from '../../lib/apiClient';
 import { Task } from '../../types/models';
@@ -13,7 +13,6 @@ interface NavItem {
 
 export default function EmployeeSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [activeTasksCount, setActiveTasksCount] = useState(0);
   const location = useLocation();
   const { clearAuth } = useAuthStore();
@@ -25,7 +24,6 @@ export default function EmployeeSidebar() {
   const fetchTasksCount = async () => {
     try {
       const response = await api.get<Task[]>('/api/tasks');
-      setTasks(response);
       const activeCount = response.filter(task => task.status !== 'completed').length;
       setActiveTasksCount(activeCount);
     } catch (error) {

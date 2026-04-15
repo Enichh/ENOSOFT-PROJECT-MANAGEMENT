@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 interface AssistantMessageProps {
   content: string;
   timestamp: string;

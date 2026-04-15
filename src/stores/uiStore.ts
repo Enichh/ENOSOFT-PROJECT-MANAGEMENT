@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
 interface Notification {
   id: string;
@@ -19,27 +20,41 @@ interface UiState {
   clearNotifications: () => void;
 }
 
-export const useUiStore = create<UiState>((set) => ({
-  sidebarOpen: true,
-  theme: 'light',
-  notifications: [],
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  setTheme: (theme) => set({ theme }),
-  addNotification: (notification) =>
-    set((state) => ({
-      notifications: [
-        ...state.notifications,
-        {
-          ...notification,
-          id: crypto.randomUUID(),
-          duration: notification.duration ?? 5000,
-        },
-      ],
-    })),
-  removeNotification: (id) =>
-    set((state) => ({
-      notifications: state.notifications.filter((n) => n.id !== id),
-    })),
-  clearNotifications: () => set({ notifications: [] }),
-}));
+export const useUiStore = create<UiState>()(
+  devtools(
+    persist(
+      (set) => ({
+        sidebarOpen: true,
+        theme: 'light',
+        notifications: [],
+        toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+        setSidebarOpen: (open) => set({ sidebarOpen: open }),
+        setTheme: (theme) => set({ theme }),
+        addNotification: (notification) =>
+          set((state) => ({
+            notifications: [
+              ...state.notifications,
+              {
+                ...notification,
+                id: crypto.randomUUID(),
+                duration: notification.duration ?? 5000,
+              },
+            ],
+          })),
+        removeNotification: (id) =>
+          set((state) => ({
+            notifications: state.notifications.filter((n) => n.id !== id),
+          })),
+        clearNotifications: () => set({ notifications: [] }),
+      }),
+      {
+        name: 'ui-store',
+        partialize: (state) => ({
+          sidebarOpen: state.sidebarOpen,
+          theme: state.theme,
+        }),
+      }
+    ),
+    { name: 'ui-store' }
+  )
+);

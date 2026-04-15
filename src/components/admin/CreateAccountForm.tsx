@@ -21,7 +21,7 @@ export default function CreateAccountForm({ onSuccess }: CreateAccountFormProps)
 
   const queryClient = useQueryClient();
 
-  const { data: employees = [], isLoading } = useQuery<Employee[]>({
+  const { data: employees = [] } = useQuery<Employee[]>({
     queryKey: ['employees'],
     queryFn: () => api.get<Employee[]>('/employees'),
   });

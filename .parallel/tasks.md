@@ -1,138 +1,101 @@
-# Master Task List - EnoSoft Project
+# Master Debug Task List
 
-## Phase 1: Foundation (Sequential)
+## Shared Workstream - Authentication Core
 
-### Workstream: Shared (CRITICAL - First)
-**Priority**: Highest | **Dependencies**: None
+### Tasks
+1. [ ] **P0** Fix `jwtUtils.ts` - Remove Node.js `jsonwebtoken` dependency for browser
+   - **Issue**: `jsonwebtoken` is a Node.js library, won't work in browser
+   - **Files**: `src/auth/jwtUtils.ts`
+   - **Fix**: Use `jwt-decode` for client-side decoding, or remove verification (should be server-side)
+   
+2. [ ] **P0** Fix `authService.ts` environment variable
+   - **Issue**: `process.env.API_BASE_URL` doesn't work in Vite
+   - **Files**: `src/auth/authService.ts:3`
+   - **Fix**: Change to `import.meta.env.VITE_API_URL` to match `.env` file
 
-- [ ] Define TypeScript interfaces for all data models
-  - Employee (id, name, email, department, jobType, category, skills, createdAt)
-  - Project (id, name, description, deadline, status, assignedEmployees, createdAt)
-  - Task (id, projectId, employeeId, title, description, status, dueDate)
-  - User (id, email, passwordHash, role, employeeId)
-  - CalendarEvent (id, projectId, employeeIds, title, startDate, endDate, type)
-- [ ] Define API response/request types
-- [ ] Define role constants and permissions map
-- [ ] Create validation schemas
-- [ ] Define AI prompt templates for recommendations
+3. [ ] **P1** Verify `tokenStorage.ts` error handling
+   - **Files**: `src/auth/tokenStorage.ts`
+   - **Check**: SSR safety, localStorage errors
 
----
+4. [ ] **P1** Verify `AuthContext.tsx` initialization flow
+   - **Files**: `src/auth/AuthContext.tsx`
+   - **Check**: Race conditions, error handling, token refresh
 
-### Workstream: Auth
-**Priority**: High | **Dependencies**: Shared
+## Frontend Workstream - UI Components & Pages
 
-- [ ] Implement JWT authentication utilities
-- [ ] Create login/logout logic
-- [ ] Build role-based access control (RBAC) hooks
-- [ ] Create protected route components
-- [ ] Implement password hashing (bcryptjs)
-- [ ] Create auth context/provider
+### Tasks
+1. [ ] **P0** Fix `LoginPage.tsx` role retrieval
+   - **Issue**: Line 22 reads `userRole` from localStorage, should use `user.role` from context
+   - **Files**: `src/pages/login/LoginPage.tsx`
+   - **Fix**: Get role from `useAuth()` context after login
 
----
+2. [ ] **P1** Verify `ProtectedRoute.tsx` role checking
+   - **Files**: `src/auth/ProtectedRoute.tsx`
+   - **Check**: Permission imports, role comparison logic
 
-## Phase 2: Core Infrastructure (Parallel after Foundation)
+3. [ ] **P1** Check all admin pages for auth requirements
+   - **Files**: `src/pages/admin/*`
+   - **Check**: Proper ProtectedRoute usage, role validation
 
-### Workstream: Backend
-**Priority**: High | **Dependencies**: Shared
+4. [ ] **P1** Check all employee pages for auth requirements
+   - **Files**: `src/pages/employee/*`
+   - **Check**: Proper ProtectedRoute usage, role validation
 
-- [ ] Set up Netlify functions structure
-- [ ] Create data layer abstraction (Blob store wrapper)
-- [ ] Implement employee CRUD functions
-- [ ] Implement project CRUD functions
-- [ ] Implement task CRUD functions
-- [ ] Create AI recommendation function (OpenAI/Anthropic API)
-- [ ] Create AI chat function with context management
-- [ ] Implement search endpoints (category, department, jobType)
-- [ ] Set up CORS and security headers
-- [ ] Create error handling middleware
+5. [ ] **P2** Verify router configuration
+   - **Files**: `src/router.tsx`
+   - **Check**: Route guards, redirects, index routes
 
----
+6. [ ] **P2** Check layout components
+   - **Files**: `src/components/layout/*`
+   - **Check**: Auth state access, navigation based on role
 
-### Workstream: Frontend-Core
-**Priority**: High | **Dependencies**: Shared, Auth
+## Backend Workstream - Netlify Functions
 
-- [ ] Initialize React + TypeScript + Vite project
-- [ ] Configure TailwindCSS
-- [ ] Set up React Router with role-based routes
-- [ ] Create global state management (Zustand/Context)
-- [ ] Create API client layer with fetch/axios
-- [ ] Build layout components (sidebar, header, footer)
-- [ ] Create loading and error states
-- [ ] Set up theme/styling system
+### Tasks
+1. [ ] **P0** Debug auth function
+   - **Files**: `netlify/functions/auth/*`
+   - **Check**: Login, logout, token refresh, current user endpoints
+   - **Check**: JWT signing/verification, password hashing
 
----
+2. [ ] **P1** Debug employees function
+   - **Files**: `netlify/functions/employees/*`
+   - **Check**: CRUD operations, data validation
 
-## Phase 3: Feature Implementation (Parallel)
+3. [ ] **P1** Debug projects function
+   - **Files**: `netlify/functions/projects/*`
+   - **Check**: CRUD operations, employee assignments
 
-### Workstream: Admin-UI
-**Priority**: Medium | **Dependencies**: Frontend-Core, Backend
+4. [ ] **P1** Debug tasks function
+   - **Files**: `netlify/functions/tasks/*`
+   - **Check**: CRUD operations, status updates
 
-- [ ] Create admin dashboard layout
-- [ ] Build employee repository page
-  - List view with filters (category, department, jobType)
-  - Search functionality
-  - Add/Edit employee modal
-- [ ] Build project management page
-  - Project list with CRUD
-  - Project detail view
-  - Task assignment interface
-- [ ] Build employee assignment interface
-  - Drag-and-drop or selection UI
-  - Show available employees with filters
-  - Show AI recommendation button
-- [ ] Build admin calendar view
-  - FullCalendar integration
-  - Project deadline visualization
-  - Employee assignment on calendar
-  - Edit events capability
-- [ ] Create employee account creation form
+5. [ ] **P2** Debug calendar function
+   - **Files**: `netlify/functions/calendar/*`
+   - **Check**: Event CRUD, date handling
 
----
+6. [ ] **P2** Debug AI function
+   - **Files**: `netlify/functions/ai/*`
+   - **Check**: OpenAI integration, error handling
 
-### Workstream: Employee-UI
-**Priority**: Medium | **Dependencies**: Frontend-Core, Backend
+## Integration Workstream - Stores & Types
 
-- [ ] Create employee dashboard
-- [ ] Build assigned tasks view
-  - Task list with status
-  - Mark as complete functionality
-- [ ] Build project history page
-  - Completed projects list
-  - Project details and contributions
-- [ ] Build team members view (project-specific)
-  - Show colleagues on same projects
-  - Read-only employee cards
+### Tasks
+1. [ ] **P1** Verify all store implementations
+   - **Files**: `src/stores/*`
+   - **Check**: Zustand usage, persistence, state updates
 
----
+2. [ ] **P1** Check type definitions
+   - **Files**: `src/types/*`
+   - **Check**: Model consistency, API types, permission types
 
-### Workstream: AI-Features
-**Priority**: Medium | **Dependencies**: Frontend-Core, Backend (AI functions)
+3. [ ] **P2** Verify `apiClient.ts`
+   - **Files**: `src/lib/apiClient.ts`
+   - **Check**: Error handling, request/response interceptors
 
-- [ ] Create AI chat interface component
-  - Chat UI with message history
-  - Context-aware prompts for recommendations
-- [ ] Implement recommendation button component
-  - Loading states during AI processing
-  - Display recommended employees with reasoning
-  - One-click accept recommendation
-- [ ] Create AI suggestion display component
-- [ ] Build prompt engineering for employee matching
-  - Send project requirements + employee profiles
-  - Parse AI response into structured data
+## Bug Tracking Log
 
----
-
-## Phase 4: Integration & Polish
-
-- [ ] Connect all API endpoints
-- [ ] Implement error handling and notifications
-- [ ] Add loading states across all pages
-- [ ] Test role-based access
-- [ ] Deploy to Netlify
-- [ ] Environment variable configuration
-
-## Naming Conventions (Per Project Rules)
-- camelCase for all variables, functions, classes, files
-- Single responsibility per module/function
-- Early returns and guard clauses
-- Minimal comments for non-obvious logic
+| # | Severity | Location | Description | Status |
+|---|----------|----------|-------------|--------|
+| 1 | P0 | `src/pages/login/LoginPage.tsx:22` | Reading userRole from localStorage | Pending |
+| 2 | P0 | `src/auth/authService.ts:3` | Wrong env var style for Vite | Pending |
+| 3 | P0 | `src/auth/jwtUtils.ts` | Node.js library in browser | Pending |

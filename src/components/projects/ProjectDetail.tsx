@@ -1,4 +1,3 @@
-import React from 'react';
 import { Project, Employee } from '../../types/models';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';

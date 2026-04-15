@@ -1,6 +1,6 @@
 import type { User } from '../types/models';
 
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/.netlify/functions';
 
 export interface LoginCredentials {
   email: string;

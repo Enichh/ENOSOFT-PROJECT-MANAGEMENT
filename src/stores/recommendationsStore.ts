@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import { EmployeeRecommendation } from '../types/models';
 import { api } from '../lib/apiClient';
 
@@ -12,48 +13,53 @@ interface RecommendationsStore {
   clearRecommendations: () => void;
 }
 
-export const useRecommendationsStore = create<RecommendationsStore>((set, get) => ({
-  currentRecommendations: [],
-  isLoading: false,
-  error: null,
-  cache: {},
+export const useRecommendationsStore = create<RecommendationsStore>()(
+  devtools(
+    (set, get) => ({
+      currentRecommendations: [],
+      isLoading: false,
+      error: null,
+      cache: {},
 
-  fetchRecommendations: async (projectId: string, requiredSkills?: string[]) => {
-    const { cache } = get();
-    
-    if (cache[projectId]) {
-      set({ currentRecommendations: cache[projectId] });
-      return;
-    }
+      fetchRecommendations: async (projectId: string, requiredSkills?: string[]) => {
+        const { cache } = get();
+        
+        if (cache[projectId]) {
+          set({ currentRecommendations: cache[projectId] });
+          return;
+        }
 
-    set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null });
 
-    try {
-      const response = await api.post<{ recommendations: EmployeeRecommendation[] }>('/ai/recommend', {
-        projectId,
-        requiredSkills,
-      });
+        try {
+          const response = await api.post<{ data: { recommendations: EmployeeRecommendation[] } }>('/ai/recommend', {
+            projectId,
+            requiredSkills,
+          });
 
-      set((state) => ({
-        currentRecommendations: response.recommendations,
-        isLoading: false,
-        cache: { ...state.cache, [projectId]: response.recommendations },
-      }));
-    } catch (error) {
-      set({
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch recommendations',
-      });
-    }
-  },
+          set((state) => ({
+            currentRecommendations: response.data.recommendations,
+            isLoading: false,
+            cache: { ...state.cache, [projectId]: response.data.recommendations },
+          }));
+        } catch (error) {
+          set({
+            isLoading: false,
+            error: error instanceof Error ? error.message : 'Failed to fetch recommendations',
+          });
+        }
+      },
 
-  acceptRecommendation: (employeeId: string) => {
-    set((state) => ({
-      currentRecommendations: state.currentRecommendations.filter(
-        (rec) => rec.employeeId !== employeeId
-      ),
-    }));
-  },
+      acceptRecommendation: (employeeId: string) => {
+        set((state) => ({
+          currentRecommendations: state.currentRecommendations.filter(
+            (rec) => rec.employeeId !== employeeId
+          ),
+        }));
+      },
 
-  clearRecommendations: () => set({ currentRecommendations: [], error: null }),
-}));
+      clearRecommendations: () => set({ currentRecommendations: [], error: null }),
+    }),
+    { name: 'recommendations-store' }
+  )
+);

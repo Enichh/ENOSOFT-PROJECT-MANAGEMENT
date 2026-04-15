@@ -4,7 +4,7 @@ import { PERMISSIONS } from '../../types/permissions';
 export function usePermission() {
   const { user } = useAuth();
   
-  const userPermissions = user ? PERMISSIONS[user.role as keyof typeof PERMISSIONS] : [];
+  const userPermissions: string[] = user ? [...PERMISSIONS[user.role as keyof typeof PERMISSIONS]] : [];
   
   const hasPermission = (permission: string): boolean => {
     if (!user) return false;

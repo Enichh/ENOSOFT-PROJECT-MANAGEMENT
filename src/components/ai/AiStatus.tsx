@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface AiStatusProps {
   status: 'available' | 'loading' | 'error';
 }
